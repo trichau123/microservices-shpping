@@ -1,5 +1,6 @@
 package com.amex.orderservicetechie.service;
 
+import com.amex.orderservicetechie.dto.InventoryResponse;
 import com.amex.orderservicetechie.dto.OrderLineItemsDto;
 import com.amex.orderservicetechie.dto.OrderRequest;
 import com.amex.orderservicetechie.model.Order;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,13 +39,15 @@ public class OrderService {
         List<String> skuCodes = order.getOrderLineItemsList().stream().map(OrderLineItems::getSkuCode)
                 .collect(Collectors.toList());
         //Call inventory service, and place order if product is in stock
-        Boolean result = webClient.get().uri("http://localhost:8083/api/inventory",
+        InventoryResponse[] inventoryResponsesArray = webClient.get().uri("http://localhost:8083/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes)
                                 .build())
                         .retrieve()
-                                .bodyToMono(Boolean.class)
+                                .bodyToMono(InventoryResponse[].class)
                                         .block();
-        if(result){
+        boolean allProductsInStock = Arrays.stream(inventoryResponsesArray).allMatch(InventoryResponse::isInStock);
+
+        if(allProductsInStock){
             orderRepository.save(order);
         }
         else{
