@@ -1,6 +1,8 @@
 package com.amex.inventoryservice.controller;
 
+import com.amex.inventoryservice.dto.InventoryResponse;
 import com.amex.inventoryservice.service.InventoryService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +13,11 @@ public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
 
-    @GetMapping("/{sku-code}")
+    //http://localhost:8083/api/inventory?sku-code=iphone-13&sku-code=iphone-13-red
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public boolean isInstock(@PathVariable("sku-code") String skuCode){
-        return inventoryService.isInStock(skuCode);
+    public List<InventoryResponse> isInstock(@RequestParam List<String> skuCodes){
+        return inventoryService.isInStock(skuCodes);
 
     }
 }
