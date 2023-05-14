@@ -19,13 +19,12 @@
     <module>order-service</module>
     <module>inventory-service</module>
       <module>discovery-server</module>
+    <module>api-gateway</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-clound.version>2022.0.2</spring-clound.version>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <spring-cloud.version>2021.0.2</spring-cloud.version>
   </properties>
 
   <dependencies>
@@ -53,6 +52,7 @@
         <scope>import</scope>
       </dependency>
     </dependencies>
+
   </dependencyManagement>
   <build>
     <plugins>

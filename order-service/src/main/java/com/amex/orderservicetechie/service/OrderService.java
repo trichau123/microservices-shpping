@@ -26,7 +26,7 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
     public void placeOrder(OrderRequest orderRequest){
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -39,7 +39,7 @@ public class OrderService {
         List<String> skuCodes = order.getOrderLineItemsList().stream().map(OrderLineItems::getSkuCode)
                 .collect(Collectors.toList());
         //Call inventory service, and place order if product is in stock
-        InventoryResponse[] inventoryResponsesArray = webClient.get().uri("http://localhost:8083/api/inventory",
+        InventoryResponse[] inventoryResponsesArray = webClientBuilder.build().get().uri("http://inventory-service/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes)
                                 .build())
                         .retrieve()
